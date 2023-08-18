@@ -5,15 +5,19 @@ const bodyparser = require("body-parser");
 require("dotenv").config();
 const helmet = require("helmet");
 const sequelize = require("./util/database");
-const userRoutes = require('./routes/user');
+const userRoutes = require("./routes/user");
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  })
+);
 
 app.use(helmet());
 
 app.use(bodyparser.json());
 
-app.use('/user', userRoutes)
+app.use("/user", userRoutes);
 
 sequelize
   .sync()
