@@ -5,12 +5,22 @@ exports.postMsgs = async (req, res) => {
     await Chat.create({
       name: req.user.name,
       message: req.body.msg,
-      newUser: req.body.newUser,
       userId: req.user.id,
     });
 
-    res.json({message: 'success'})
+    res.json({ message: "success", name: req.user.name });
   } catch (err) {
     res.status(500).json(err);
+  }
+};
+
+exports.getMsgs = async (req, res) => {
+  try {
+    const messages = await Chat.findAll({
+      attributes: ["name", "message"],
+    });
+    res.json(messages);
+  } catch (err) {
+    res.status(500).json({ error: err, message: "something went wrong" });
   }
 };

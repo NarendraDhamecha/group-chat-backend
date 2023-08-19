@@ -18,11 +18,6 @@ const Chat = sequelize.define("chats", {
     type: Sequelize.STRING,
     allowNull: false,
   },
-
-  newUser: {
-    type: Sequelize.BOOLEAN,
-    allowNull: false
-  }
 });
 
 module.exports = Chat;
