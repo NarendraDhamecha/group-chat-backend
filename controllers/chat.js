@@ -1,4 +1,6 @@
 const Chat = require("../models/chat");
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op
 
 exports.postMsgs = async (req, res) => {
   try {
@@ -15,9 +17,17 @@ exports.postMsgs = async (req, res) => {
 };
 
 exports.getMsgs = async (req, res) => {
+  let lastMsgId = Number(req.query.lastMsgId);
+  if (isNaN(lastMsgId)) {
+    console.log('kkskks')
+    lastMsgId = -1;
+  }
+  console.log(lastMsgId)
+
   try {
     const messages = await Chat.findAll({
-      attributes: ["name", "message"],
+      attributes: ["id", "name", "message"],
+      where: {id:  {[Op.gt]: lastMsgId}}
     });
     res.json(messages);
   } catch (err) {
