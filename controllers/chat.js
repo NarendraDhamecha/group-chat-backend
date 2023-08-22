@@ -1,6 +1,6 @@
 const Chat = require("../models/chat");
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op
+const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 
 exports.postMsgs = async (req, res) => {
   try {
@@ -8,6 +8,7 @@ exports.postMsgs = async (req, res) => {
       name: req.user.name,
       message: req.body.msg,
       userId: req.user.id,
+      groupId: req.body.groupId,
     });
 
     res.json({ message: "success", name: req.user.name });
@@ -17,17 +18,27 @@ exports.postMsgs = async (req, res) => {
 };
 
 exports.getMsgs = async (req, res) => {
-  let lastMsgId = Number(req.query.lastMsgId);
-  if (isNaN(lastMsgId)) {
-    console.log('kkskks')
+  let { lastMsgId, groupId } = req.query;
+  console.log(lastMsgId, groupId);
+
+  if (lastMsgId === "null") {
     lastMsgId = -1;
   }
-  console.log(lastMsgId)
 
   try {
+    if (groupId === "null") {
+      const messages = await Chat.findAll({
+        attributes: ["id", "name", "message"],
+        where: {
+          [Op.and]: [{ id: { [Op.gt]: Number(lastMsgId) } }, { groupId: null }],
+        },
+      });
+      return res.json(messages);
+    }
+
     const messages = await Chat.findAll({
       attributes: ["id", "name", "message"],
-      where: {id:  {[Op.gt]: lastMsgId}}
+      where: { groupId: groupId },
     });
     res.json(messages);
   } catch (err) {

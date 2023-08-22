@@ -10,6 +10,9 @@ const User = require("./models/user");
 const Chat = require("./models/chat");
 const chatRoutes = require("./routes/chat");
 const userAuth = require("./middleware/userAuth");
+const UserGroup = require("./models/userGroups");
+const Group = require("./models/group");
+const groupRoutes = require("./routes/group");
 
 app.use(
   cors({
@@ -25,8 +28,16 @@ app.use("/user", userRoutes);
 
 app.use("/chat", userAuth, chatRoutes);
 
+app.use("/group", userAuth, groupRoutes);
+
 User.hasMany(Chat);
 Chat.belongsTo(User);
+
+User.belongsToMany(Group, { through: UserGroup });
+Group.belongsToMany(User, { through: UserGroup });
+
+Group.hasMany(Chat);
+Chat.belongsTo(Group);
 
 sequelize
   .sync()
