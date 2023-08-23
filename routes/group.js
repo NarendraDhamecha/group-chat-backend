@@ -6,4 +6,8 @@ router.post("/creategroup", groupController.createGroup);
 
 router.get("/getgroup", groupController.getGroups);
 
+router.post("/addmember", groupController.addMember);
+
+router.post('/makeadmin', groupController.makeAdmin)
+
 module.exports = router;
